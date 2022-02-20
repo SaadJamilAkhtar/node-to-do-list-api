@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler')
 const toDo = require("../models/toDoModel")
+const User = require('../models/userModel')
 
 //  @Details        Get all To Do Tasks
 //  @Path           GET /api/todo
@@ -40,6 +41,36 @@ const addToDo = asyncHandler(async (req, res) => {
 //  @Path           PUT /api/todo/id
 //  @visibility     Private
 const updateToDo = asyncHandler(async (req, res) => {
+    const {id} = req.params
+    if (!id) {
+        res.status(400);
+        throw new Erro("Missing Params");
+    }
+    const todo = await toDo.findById(id);
+
+    if (!todo) {
+        res.status(400);
+        throw new Error("Item not found");
+    }
+
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+        res.status(400);
+        throw new Error("User not found");
+    }
+
+    if (todo.user.toString() !== user.id) {
+        res.status(401);
+        throw new Error("User Not Authorized");
+    }
+
+    const todoUpdated = await toDo.findByIdAndUpdate(id, req.body, {
+        new: true
+    });
+
+    res.status(200).json(todoUpdated);
+
 
 });
 
@@ -48,7 +79,32 @@ const updateToDo = asyncHandler(async (req, res) => {
 //  @Path           DEL /api/todo/id
 //  @visibility     Private
 const deleteToDo = asyncHandler(async (req, res) => {
-    res.json({message: "to do list delete"});
+    const {id} = req.params
+    if (!id) {
+        res.status(400);
+        throw new Erro("Missing Params");
+    }
+    const todo = await toDo.findById(id);
+
+    if (!todo) {
+        res.status(400);
+        throw new Error("Item not found");
+    }
+
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+        res.status(400);
+        throw new Error("User not found");
+    }
+
+    if (todo.user.toString() !== user.id) {
+        res.status(401);
+        throw new Error("User Not Authorized");
+    }
+
+    await todo.remove();
+    res.status(200).json({id});
 });
 
 
