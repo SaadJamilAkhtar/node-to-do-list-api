@@ -1,4 +1,4 @@
-# Goal Tracker API
+# To Do API
 To Do List Api using Node and Express with Mongo DB
 
 ## DEV ENV
