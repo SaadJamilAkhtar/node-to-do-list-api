@@ -20,3 +20,7 @@ To Do List Api using Node and Express with Mongo DB
 2. PORT
 3. MONGO_URI
 4. JWT_SECRET
+
+___
+
+### [Link to sample .env file](https://github.com/SaadJamilAkhtar/Sample-env-file)
